@@ -42,7 +42,7 @@ export function setupCollisionListener(onMerge) {
           friction: 0.5,
           label: 'ball',
         });
-        newBody.gameData = { level: newLevel, ismerging: false };
+        newBody.gameData = { level: newLevel, ismerging: false, createdAt: Date.now() };
         Body.setVelocity(newBody, { x: 0, y: 0 });
 
         addToWorld(newBody);

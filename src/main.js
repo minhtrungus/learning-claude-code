@@ -47,7 +47,7 @@ function handleDrop(canvasX) {
     friction: 0.5,
     label: 'ball',
   });
-  body.gameData = { level, ismerging: false };
+  body.gameData = { level, ismerging: false, createdAt: Date.now() };
   addToWorld(body);
 
   // Queue next ball immediately (not displayed)
@@ -67,6 +67,8 @@ function setupOverflowDetection() {
     for (const body of getBalls()) {
       if (!body.gameData) continue;
       const r = PLANETS[body.gameData.level - 1].radius;
+      const age = Date.now() - (body.gameData.createdAt ?? 0);
+      if (age < 800) continue; // grace period — ball is still falling from spawn
       if ((body.position.y - r) <= DANGER_LINE_Y && body.speed < 1.5) {
         triggerGameOver();
         return;
