@@ -1,14 +1,14 @@
 export const PLANETS = [
-  { level: 1,  name: 'Meteorite', color: '#888888',  radius: 15  },
-  { level: 2,  name: 'Mercury',   color: '#a0917a',  radius: 22  },
-  { level: 3,  name: 'Mars',      color: '#c1440e',  radius: 30  },
-  { level: 4,  name: 'Venus',     color: '#e8cda0',  radius: 38  },
-  { level: 5,  name: 'Earth',     color: '#1a6bb5',  radius: 47  },
-  { level: 6,  name: 'Neptune',   color: '#3f54ba',  radius: 57  },
-  { level: 7,  name: 'Uranus',    color: '#7de8e8',  radius: 68  },
-  { level: 8,  name: 'Saturn',    color: '#e8a951',  radius: 80  },
-  { level: 9,  name: 'Jupiter',   color: '#c88b3a',  radius: 93  },
-  { level: 10, name: 'Sun',       color: '#FFD700',  radius: 108 },
+  { level: 1,  name: 'Meteorite', color: '#b0b8cc',  radius: 15  },
+  { level: 2,  name: 'Mercury',   color: '#d4b0a8',  radius: 22  },
+  { level: 3,  name: 'Mars',      color: '#e89898',  radius: 30  },
+  { level: 4,  name: 'Venus',     color: '#f0e0a0',  radius: 38  },
+  { level: 5,  name: 'Earth',     color: '#88c0e8',  radius: 47  },
+  { level: 6,  name: 'Neptune',   color: '#9898e0',  radius: 57  },
+  { level: 7,  name: 'Uranus',    color: '#98e8d8',  radius: 68  },
+  { level: 8,  name: 'Saturn',    color: '#f0c898',  radius: 80  },
+  { level: 9,  name: 'Jupiter',   color: '#e0b890',  radius: 93  },
+  { level: 10, name: 'Sun',       color: '#f8e870',  radius: 108 },
 ];
 
 /**
@@ -77,12 +77,17 @@ export function renderBall(ctx, cx, cy, level) {
     ctx.restore();
   }
 
-  // Planet name label
-  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  // Planet name label — dark stroke outline for readability on any background
+  const label = planet.name.slice(0, 3).toUpperCase();
   ctx.font = `bold ${Math.max(8, r * 0.22)}px monospace`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(planet.name.slice(0, 3).toUpperCase(), cx, cy);
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+  ctx.strokeText(label, cx, cy);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(label, cx, cy);
 
   ctx.restore();
 }

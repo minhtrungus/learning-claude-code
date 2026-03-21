@@ -9,6 +9,8 @@ export const DANGER_LINE_Y = CANVAS_H * 0.15; // 90px
 let canvas, ctx;
 let animFrameId = null;
 let preview = null; // { x, level } — current ball preview position
+let mergeEffects = []; // { x, y, r, startTime }
+const MERGE_DURATION = 400;
 
 export function initUI() {
   canvas = document.getElementById('game-canvas');
@@ -74,7 +76,7 @@ export function drawFrame() {
     ctx.setLineDash([4, 6]);
     ctx.beginPath();
     ctx.moveTo(clampedX, r * 2);       // bottom edge of preview ball
-    ctx.lineTo(clampedX, landingY - r); // top edge of landing position
+    ctx.lineTo(clampedX, landingY + r); // bottom edge of ball at rest = top of obstacle
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.restore();
@@ -89,6 +91,21 @@ export function drawFrame() {
     const { x, y } = body.position;
     const level = body.gameData?.level;
     if (level) renderBall(ctx, x, y, level);
+  }
+
+  // Merge effects — expanding ring that fades out
+  const now = Date.now();
+  mergeEffects = mergeEffects.filter(e => now - e.startTime < MERGE_DURATION);
+  for (const e of mergeEffects) {
+    const t = (now - e.startTime) / MERGE_DURATION; // 0 → 1
+    ctx.save();
+    ctx.globalAlpha = (1 - t) * 0.8;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r * (1 + t * 0.7), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
   }
 
   // Score HUD (HTML elements)
@@ -124,6 +141,11 @@ export function setPreview(x, level) {
 
 export function clearPreview() {
   preview = null;
+}
+
+/** Spawn a white expanding-ring effect at the merge point */
+export function addMergeEffect(x, y, r) {
+  mergeEffects.push({ x, y, r, startTime: Date.now() });
 }
 
 export { canvas };
