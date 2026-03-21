@@ -15,6 +15,29 @@ export function initUI() {
   ctx = canvas.getContext('2d');
 }
 
+/**
+ * Ray-cast a vertical drop at dropX for a ball of dropRadius.
+ * Returns the y-center of where the ball would come to rest:
+ * - top surface of the first ball it hits, or
+ * - the floor (CANVAS_H - dropRadius)
+ */
+function calcLandingY(dropX, dropRadius) {
+  let minY = CANVAS_H - dropRadius; // floor
+
+  for (const body of getBalls()) {
+    if (!body.gameData) continue;
+    const { x: bx, y: by } = body.position;
+    const br = PLANETS[body.gameData.level - 1].radius;
+    const dx = dropX - bx;
+    const sumR = dropRadius + br;
+    if (Math.abs(dx) >= sumR) continue; // ray misses this ball horizontally
+    const hitY = by - Math.sqrt(sumR * sumR - dx * dx);
+    if (hitY > dropRadius && hitY < minY) minY = hitY;
+  }
+
+  return minY;
+}
+
 /** Clears and redraws the full canvas each animation frame */
 export function drawFrame() {
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
@@ -41,23 +64,23 @@ export function drawFrame() {
     const r = PLANETS[level - 1].radius;
     const clampedX = Math.max(r, Math.min(CANVAS_W - r, x));
 
-    // Vertical guide line from top to danger line
+    // Ray cast: find y where dropping ball would first touch another ball or the floor
+    const landingY = calcLandingY(clampedX, r);
+
+    // Guide line from bottom of preview ball to top of landing surface
     ctx.save();
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 6]);
     ctx.beginPath();
-    ctx.moveTo(clampedX, 0);
-    ctx.lineTo(clampedX, DANGER_LINE_Y);
+    ctx.moveTo(clampedX, r * 2);       // bottom edge of preview ball
+    ctx.lineTo(clampedX, landingY - r); // top edge of landing position
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.restore();
 
-    // Preview ball — semi-transparent
-    ctx.save();
-    ctx.globalAlpha = 0.5;
+    // Preview ball — full opacity
     renderBall(ctx, clampedX, r, level);
-    ctx.restore();
   }
 
   // Balls
