@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planet Merge</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <span>SCORE: <span id="score-display">0</span></span>
+      <span>BEST: <span id="best-display">0</span></span>
+    </header>
+    <div id="canvas-wrap">
+      <canvas id="game-canvas" width="480" height="600"></canvas>
+    </div>
+    <div id="overlay" class="hidden">
+      <div id="overlay-content">
+        <h2>GAME OVER</h2>
+        <p>Score: <span id="final-score">0</span></p>
+        <button id="restart-btn">Play Again</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
