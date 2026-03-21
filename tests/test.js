@@ -1,5 +1,6 @@
 import { assert, section } from './helpers.js';
 import { PLANETS, createBallDef } from '../src/ball.js';
+import { resetScore, addScore, getScore, getBest } from '../src/score.js';
 
 section('ball.js — PLANETS table');
 assert('has 10 planets', PLANETS.length === 10);
@@ -15,3 +16,15 @@ assert('createBallDef returns color string', typeof def.color === 'string');
 
 const randomDefs = Array.from({ length: 50 }, () => createBallDef());
 assert('random ball is always level 1–5', randomDefs.every(d => d.level >= 1 && d.level <= 5));
+
+section('score.js');
+resetScore();
+assert('score starts at 0 after reset', getScore() === 0);
+addScore(6);
+assert('addScore(level) adds level*10', getScore() === 60);
+addScore(3);
+assert('addScore accumulates', getScore() === 90);
+const best1 = getBest();
+resetScore();
+assert('reset clears score', getScore() === 0);
+assert('best preserved after reset', getBest() === best1);
