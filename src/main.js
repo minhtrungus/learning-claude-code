@@ -1,5 +1,5 @@
 import { initPhysics, startPhysics, engine, Events, Bodies, addToWorld, clearBalls, getBalls } from './physics.js';
-import { initUI, startRenderLoop, showOverlay, hideOverlay, DANGER_LINE_Y, canvas } from './ui.js';
+import { initUI, startRenderLoop, showOverlay, hideOverlay, setPreview, clearPreview, DANGER_LINE_Y, canvas } from './ui.js';
 import { setupInput } from './input.js';
 import { setupCollisionListener } from './collision.js';
 import { createBallDef, PLANETS } from './ball.js';
@@ -23,7 +23,7 @@ function init() {
 
   setupCollisionListener(null);
   setupOverflowDetection();
-  setupInput(canvas, handleDrop, isLocked);
+  setupInput(canvas, handleDrop, handleMove, isLocked);
 
   document.getElementById('restart-btn').addEventListener('click', restart);
 
@@ -31,10 +31,17 @@ function init() {
   startRenderLoop();
 }
 
+// ── Move (preview) ────────────────────────────────────────────────────────────
+function handleMove(canvasX) {
+  if (state === 'gameover') return;
+  if (currentBall) setPreview(canvasX, currentBall.level);
+}
+
 // ── Drop ──────────────────────────────────────────────────────────────────────
 function handleDrop(canvasX) {
   if (state !== 'playing' || !currentBall) return;
 
+  clearPreview();
   state = 'dropping';
 
   const { level, radius } = currentBall;
@@ -87,6 +94,7 @@ function restart() {
   clearBalls();
   resetScore();
   currentBall = createBallDef();
+  clearPreview();
   state = 'playing';
   hideOverlay();
 }
