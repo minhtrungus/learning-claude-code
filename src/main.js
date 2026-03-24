@@ -4,7 +4,7 @@ import { setupInput } from './input.js';
 import { setupCollisionListener } from './collision.js';
 import { createBallDef, PLANETS } from './ball.js';
 import { resetScore, getScore, restoreScore } from './score.js';
-import { initAudio, toggleMute, isMuted } from './audio.js';
+import { initAudio, toggleMute, isMuted, playDrop, playGameOver } from './audio.js';
 
 const STATE_KEY = 'planet_merge_state';
 
@@ -62,6 +62,7 @@ function handleDrop(canvasX) {
 
   clearPreview();
   state = 'dropping';
+  playDrop();
 
   const { level, radius } = currentBall;
   const clampedX = Math.max(radius, Math.min(480 - radius, canvasX));
@@ -101,6 +102,7 @@ function setupOverflowDetection() {
 }
 
 function triggerGameOver() {
+  playGameOver();
   state = 'gameover';
   clearSavedState();
   showOverlay(getScore());
