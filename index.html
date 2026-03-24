@@ -13,10 +13,19 @@
       <button id="mute-btn" title="Toggle sound">🔊</button>
       <span>SCORE: <span id="score-display">0</span></span>
       <span>BEST: <span id="best-display">0</span></span>
+      <button id="trophy-btn" title="Achievements">🏆</button>
     </header>
+    <div id="toast-container"></div>
     <div id="combo-display" class="hidden">COMBO x1</div>
     <div id="canvas-wrap">
       <canvas id="game-canvas" width="480" height="600"></canvas>
+    </div>
+    <div id="achievement-modal" class="hidden">
+      <div id="achievement-content">
+        <h2>Achievements</h2>
+        <ul id="achievement-list"></ul>
+        <button id="close-achievements">Close</button>
+      </div>
     </div>
     <div id="overlay" class="hidden">
       <div id="overlay-content">

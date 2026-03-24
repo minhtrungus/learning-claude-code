@@ -4,8 +4,9 @@ import { setupInput } from './input.js';
 import { setupCollisionListener } from './collision.js';
 import { createBallDef, PLANETS } from './ball.js';
 import { resetScore, getScore, restoreScore, getCombo, resetCombo } from './score.js';
-import { initAudio, toggleMute, isMuted, playDrop, playGameOver } from './audio.js';
+import { initAudio, toggleMute, isMuted, playDrop, playGameOver, playAchievement } from './audio.js';
 import { clearParticles } from './particles.js';
+import { initAchievements, checkMerge, checkScore, queueToasts, renderAchievementList } from './achievements.js';
 
 const STATE_KEY = 'planet_merge_state';
 
@@ -24,12 +25,27 @@ function init() {
   initUI();
 
   initAudio();
+  initAchievements();
 
   const muteBtn = document.getElementById('mute-btn');
   muteBtn.textContent = isMuted() ? '🔇' : '🔊';
   muteBtn.addEventListener('click', () => {
     const muted = toggleMute();
     muteBtn.textContent = muted ? '🔇' : '🔊';
+  });
+
+  const trophyBtn = document.getElementById('trophy-btn');
+  const achievementModal = document.getElementById('achievement-modal');
+  const closeAchievements = document.getElementById('close-achievements');
+  const achievementList = document.getElementById('achievement-list');
+
+  trophyBtn.addEventListener('click', () => {
+    renderAchievementList(achievementList);
+    achievementModal.classList.remove('hidden');
+  });
+
+  closeAchievements.addEventListener('click', () => {
+    achievementModal.classList.add('hidden');
   });
 
   setupCollisionListener((newBody, combo) => {
@@ -40,6 +56,10 @@ function init() {
     } else {
       hideCombo();
     }
+    const newAchievements = checkMerge(newBody.gameData.level, combo);
+    if (newAchievements.length > 0) queueToasts(newAchievements, playAchievement);
+    const scoreAchievements = checkScore(getScore());
+    if (scoreAchievements.length > 0) queueToasts(scoreAchievements, playAchievement);
     saveState();
   });
 
