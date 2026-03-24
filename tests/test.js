@@ -28,3 +28,22 @@ const best1 = getBest();
 resetScore();
 assert('reset clears score', getScore() === 0);
 assert('best preserved after reset', getBest() === best1);
+
+import { resetScore as resetScore2, addMerge, getCombo, resetCombo } from '../src/score.js';
+
+section('score.js combo');
+resetScore2();
+resetCombo();
+assert('combo starts at 1', getCombo() === 1);
+
+addMerge(3, Date.now());
+assert('first merge sets combo to 1', getCombo() === 1);
+
+addMerge(3, Date.now() + 500);
+assert('quick second merge increments combo', getCombo() === 2);
+
+addMerge(4, Date.now() + 1000);
+assert('third merge within window increments combo', getCombo() === 3);
+
+resetCombo();
+assert('resetCombo returns to 1', getCombo() === 1);
