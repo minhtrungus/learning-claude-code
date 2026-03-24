@@ -2,6 +2,7 @@ import { removeFromWorld, addToWorld, engine, Events, Body, Bodies } from './phy
 import { PLANETS } from './ball.js';
 import { addMerge, getCombo } from './score.js';
 import { playMerge, playCombo } from './audio.js';
+import { spawnParticles } from './particles.js';
 
 /**
  * Registers the collision listener on the Matter.js engine.
@@ -47,6 +48,8 @@ export function setupCollisionListener(onMerge) {
         Body.setVelocity(newBody, { x: 0, y: 0 });
 
         addToWorld(newBody);
+        const newColor = PLANETS[newLevel - 1].color;
+        spawnParticles(mx, my, newColor, 12);
         const result = addMerge(newLevel, Date.now());
         playMerge(newLevel);
         if (result.combo > 1) playCombo(result.combo);

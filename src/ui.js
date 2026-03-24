@@ -1,6 +1,7 @@
 import { renderBall, PLANETS } from './ball.js';
 import { getBalls } from './physics.js';
 import { getScore, getBest } from './score.js';
+import { updateParticles, renderParticles } from './particles.js';
 
 const CANVAS_W = 480;
 const CANVAS_H = 600;
@@ -107,6 +108,10 @@ export function drawFrame() {
     ctx.stroke();
     ctx.restore();
   }
+
+  // Particles
+  updateParticles();
+  renderParticles(ctx);
 
   // Score HUD (HTML elements)
   document.getElementById('score-display').textContent = getScore();

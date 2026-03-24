@@ -5,6 +5,7 @@ import { setupCollisionListener } from './collision.js';
 import { createBallDef, PLANETS } from './ball.js';
 import { resetScore, getScore, restoreScore } from './score.js';
 import { initAudio, toggleMute, isMuted, playDrop, playGameOver } from './audio.js';
+import { clearParticles } from './particles.js';
 
 const STATE_KEY = 'planet_merge_state';
 
@@ -162,6 +163,7 @@ function clearSavedState() {
 // ── Restart ───────────────────────────────────────────────────────────────────
 function restart() {
   clearBalls();
+  clearParticles();
   resetScore();
   clearSavedState();
   currentBall = createBallDef();
