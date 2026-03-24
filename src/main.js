@@ -4,6 +4,7 @@ import { setupInput } from './input.js';
 import { setupCollisionListener } from './collision.js';
 import { createBallDef, PLANETS } from './ball.js';
 import { resetScore, getScore, restoreScore } from './score.js';
+import { initAudio, toggleMute, isMuted } from './audio.js';
 
 const STATE_KEY = 'planet_merge_state';
 
@@ -20,6 +21,15 @@ function isLocked() {
 function init() {
   initPhysics();
   initUI();
+
+  initAudio();
+
+  const muteBtn = document.getElementById('mute-btn');
+  muteBtn.textContent = isMuted() ? '🔇' : '🔊';
+  muteBtn.addEventListener('click', () => {
+    const muted = toggleMute();
+    muteBtn.textContent = muted ? '🔇' : '🔊';
+  });
 
   setupCollisionListener((newBody) => {
     const r = PLANETS[newBody.gameData.level - 1].radius;
