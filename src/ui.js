@@ -153,4 +153,16 @@ export function addMergeEffect(x, y, r) {
   mergeEffects.push({ x, y, r, startTime: Date.now() });
 }
 
+export function showCombo(combo) {
+  const el = document.getElementById('combo-display');
+  el.textContent = `COMBO x${combo}`;
+  el.classList.remove('hidden');
+  el.classList.add('pop');
+  setTimeout(() => el.classList.remove('pop'), 100);
+}
+
+export function hideCombo() {
+  document.getElementById('combo-display').classList.add('hidden');
+}
+
 export { canvas };

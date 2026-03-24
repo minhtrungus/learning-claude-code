@@ -1,9 +1,9 @@
 import { initPhysics, startPhysics, engine, Events, Bodies, Body, addToWorld, clearBalls, getBalls } from './physics.js';
-import { initUI, startRenderLoop, showOverlay, hideOverlay, setPreview, clearPreview, addMergeEffect, DANGER_LINE_Y, canvas } from './ui.js';
+import { initUI, startRenderLoop, showOverlay, hideOverlay, setPreview, clearPreview, addMergeEffect, DANGER_LINE_Y, canvas, showCombo, hideCombo } from './ui.js';
 import { setupInput } from './input.js';
 import { setupCollisionListener } from './collision.js';
 import { createBallDef, PLANETS } from './ball.js';
-import { resetScore, getScore, restoreScore } from './score.js';
+import { resetScore, getScore, restoreScore, getCombo, resetCombo } from './score.js';
 import { initAudio, toggleMute, isMuted, playDrop, playGameOver } from './audio.js';
 import { clearParticles } from './particles.js';
 
@@ -32,9 +32,14 @@ function init() {
     muteBtn.textContent = muted ? '🔇' : '🔊';
   });
 
-  setupCollisionListener((newBody) => {
+  setupCollisionListener((newBody, combo) => {
     const r = PLANETS[newBody.gameData.level - 1].radius;
     addMergeEffect(newBody.position.x, newBody.position.y, r);
+    if (combo > 1) {
+      showCombo(combo);
+    } else {
+      hideCombo();
+    }
     saveState();
   });
 
@@ -165,6 +170,8 @@ function restart() {
   clearBalls();
   clearParticles();
   resetScore();
+  resetCombo();
+  hideCombo();
   clearSavedState();
   currentBall = createBallDef();
   clearPreview();
